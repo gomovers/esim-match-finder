@@ -50,8 +50,8 @@ const USAGE_PRESETS = {
   unlimited: { label: 'Unlimited', desc: "Don't want to think about it", gbPerDay: 5.0 },
 };
 
-function priceFor(providerKey, countryCode, days, gbPerDay) {
-  const model = PRICING_MODEL[providerKey];
+function priceFor(providerKey: string, countryCode: string, days: number, gbPerDay: number) {
+  const model = (PRICING_MODEL as any)[providerKey];
   if (!model) return null;
   if (model.type === 'unlimited') {
     const rate = model.rates[countryCode];
