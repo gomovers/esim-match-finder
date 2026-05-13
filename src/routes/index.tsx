@@ -1,26 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
+import App from "../App";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "eSIM Match — Find the Best eSIM for Your Trip" },
+      {
+        name: "description",
+        content:
+          "Compare Holafly, Airalo, Nomad, Saily, Ubigi and GigSky in 30 seconds. Save up to 90% vs. carrier roaming.",
+      },
+      {
+        property: "og:title",
+        content: "eSIM Match — Find the Best eSIM for Your Trip",
+      },
+      {
+        property: "og:description",
+        content:
+          "Compare Holafly, Airalo, Nomad, Saily, Ubigi and GigSky in 30 seconds. Save up to 90% vs. carrier roaming.",
+      },
+      { property: "og:type", content: "website" },
+    ],
+  }),
+  component: App,
 });
-
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
-}
