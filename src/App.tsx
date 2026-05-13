@@ -89,7 +89,7 @@ export default function App() {
       .filter(k => k !== 'roaming')
       .map(k => {
         const price = priceFor(k, country.code, days, gbPerDay);
-        return price !== null ? { key: k, ...PROVIDERS[k], price, dataDesc: k === 'holafly' ? 'Unlimited' : (Math.max(1, Math.ceil(days * gbPerDay)) + ' GB') } : null;
+        return price !== null ? { key: k, ...(PROVIDERS as any)[k], price, dataDesc: k === 'holafly' ? 'Unlimited' : (Math.max(1, Math.ceil(days * gbPerDay)) + ' GB') } : null;
       })
       .filter(Boolean)
       .sort((a, b) => a.price - b.price);
