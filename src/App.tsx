@@ -64,16 +64,16 @@ function priceFor(providerKey: string, countryCode: string, days: number, gbPerD
   return parseFloat((rate * totalGB * bulkFactor).toFixed(2));
 }
 
-function getFlagEmoji(code) {
-  return String.fromCodePoint(...code.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0)));
+function getFlagEmoji(code: string) {
+  return String.fromCodePoint(...code.toUpperCase().split('').map((c: string) => 127397 + c.charCodeAt(0)));
 }
 
 export default function App() {
   const [step, setStep] = React.useState(1);
-  const [country, setCountry] = React.useState(null);
+  const [country, setCountry] = React.useState<any>(null);
   const [search, setSearch] = React.useState('');
   const [days, setDays] = React.useState(7);
-  const [usage, setUsage] = React.useState('medium');
+  const [usage, setUsage] = React.useState<keyof typeof USAGE_PRESETS>('medium');
   const [tripDate, setTripDate] = React.useState('');
 
   const filteredDestinations = React.useMemo(() => {
