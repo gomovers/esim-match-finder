@@ -253,7 +253,7 @@ export default function App() {
                   <div className="text-white/70 mb-3">{results.recommended.tagline}</div>
                   <div className="text-sm font-semibold mb-4" style={{color:'#00E0A4'}}>{results.recReason}</div>
                   <div className="flex flex-wrap gap-2">
-                    {results.recommended.pros.slice(0,3).map(p=>(
+                    {results.recommended.pros.slice(0,3).map((p: string)=>(
                       <span key={p} className="text-xs px-3 py-1 rounded-full text-white/80" style={{background:'rgba(255,255,255,.08)'}}>
                         <Check size={10} className="inline -mt-0.5 mr-1" style={{color:'#00E0A4'}}/>{p}
                       </span>
