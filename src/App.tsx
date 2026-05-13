@@ -205,7 +205,7 @@ export default function App() {
                 <label className="text-white font-semibold mb-3 block">How much data do you need?</label>
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(USAGE_PRESETS).map(([key,p])=>(
-                    <button key={key} onClick={()=>setUsage(key)} className="p-4 rounded-xl text-left transition-all" style={{background:usage===key?'rgba(0,224,164,.1)':'rgba(255,255,255,.03)',border:'1px solid '+(usage===key?'#00E0A4':'rgba(255,255,255,.08)')}}>
+                    <button key={key} onClick={()=>setUsage(key as keyof typeof USAGE_PRESETS)} className="p-4 rounded-xl text-left transition-all" style={{background:usage===key?'rgba(0,224,164,.1)':'rgba(255,255,255,.03)',border:'1px solid '+(usage===key?'#00E0A4':'rgba(255,255,255,.08)')}}>
                       <div className="text-white font-semibold">{p.label}</div>
                       <div className="text-white/50 text-xs mt-1">{p.desc}</div>
                     </button>
