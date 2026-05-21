@@ -249,7 +249,7 @@ export default function App() {
                 <label className="text-white font-semibold mb-3 block">Trip start date <span className="text-white/40 font-normal text-sm">(optional)</span></label>
                 <input type="date" value={tripDate} onChange={e=>setTripDate(e.target.value)} className="w-full px-4 py-3 rounded-xl text-white focus:outline-none" style={{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.1)',colorScheme:'dark'}}/>
               </div>
-              <button onClick={()=>setStep(3)} className="w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105" style={{background:'#00E0A4',color:'#0A0A0F'}}>
+              <button onClick={()=>{track('trip_configured',{country:country.code,days,usage,trip_date:tripDate||null});setStep(3);}} className="w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105" style={{background:'#00E0A4',color:'#0A0A0F'}}>
                 Show me the best deal <ArrowRight size={20} strokeWidth={2.5}/>
               </button>
             </div>
