@@ -68,6 +68,19 @@ function getFlagEmoji(code: string) {
   return String.fromCodePoint(...code.toUpperCase().split('').map((c: string) => 127397 + c.charCodeAt(0)));
 }
 
+function track(event: string, params: Record<string, any> = {}) {
+  if (typeof window === 'undefined') return;
+  const payload = { event, ...params, ts: Date.now() };
+  try {
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push(payload);
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', event, params);
+    }
+  } catch {}
+  if (typeof console !== 'undefined') console.log('[analytics]', event, params);
+}
+
 export default function App() {
   const [step, setStep] = React.useState(1);
   const [country, setCountry] = React.useState<any>(null);
@@ -75,6 +88,26 @@ export default function App() {
   const [days, setDays] = React.useState(7);
   const [usage, setUsage] = React.useState<keyof typeof USAGE_PRESETS>('medium');
   const [tripDate, setTripDate] = React.useState('');
+
+  React.useEffect(() => { track('funnel_start', { step: 1 }); }, []);
+  React.useEffect(() => {
+    if (step === 3 && country && results) {
+      track('results_view', {
+        country: country.code,
+        country_name: country.name,
+        days,
+        usage,
+        trip_date: tripDate || null,
+        days_until_trip: daysUntilTrip,
+        cheapest_price: results.rows[0]?.price,
+        recommended_provider: results.recommended?.key,
+        recommended_price: results.recommended?.price,
+        savings: results.savings,
+        savings_pct: results.savingsPct,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const filteredDestinations = React.useMemo(() => {
     if (!search) return DESTINATIONS;
@@ -175,7 +208,7 @@ export default function App() {
               </div>
               <div className="mt-4 max-h-96 overflow-y-auto scrollbar-thin grid grid-cols-1 sm:grid-cols-2 gap-2 p-1">
                 {filteredDestinations.map(d=>(
-                  <button key={d.code} onClick={()=>{setCountry(d);setStep(2);}} className="flex items-center gap-3 p-4 rounded-xl text-left transition-all hover:scale-105" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
+                  <button key={d.code} onClick={()=>{track('country_select',{country:d.code,country_name:d.name,region:d.region});setCountry(d);setStep(2);}} className="flex items-center gap-3 p-4 rounded-xl text-left transition-all hover:scale-105" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
                     <span className="text-2xl">{getFlagEmoji(d.flag)}</span>
                     <div className="flex-1"><div className="text-white font-semibold">{d.name}</div><div className="text-white/40 text-xs">{d.region}</div></div>
                     <ArrowRight size={16} className="text-white/30"/>
@@ -190,7 +223,7 @@ export default function App() {
             <div className="text-center mb-8">
               <div className="text-5xl mb-2">{getFlagEmoji(country.flag)}</div>
               <h2 className="display text-white text-4xl font-extrabold">Going to {country.name}</h2>
-              <button onClick={()=>setStep(1)} className="text-white/40 text-sm mt-2 hover:text-white transition-colors">Change destination</button>
+              <button onClick={()=>{track('step_back',{from:2,to:1});setStep(1);}} className="text-white/40 text-sm mt-2 hover:text-white transition-colors">Change destination</button>
             </div>
             <div className="space-y-6 p-8 rounded-3xl" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
               <div>
@@ -216,7 +249,7 @@ export default function App() {
                 <label className="text-white font-semibold mb-3 block">Trip start date <span className="text-white/40 font-normal text-sm">(optional)</span></label>
                 <input type="date" value={tripDate} onChange={e=>setTripDate(e.target.value)} className="w-full px-4 py-3 rounded-xl text-white focus:outline-none" style={{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.1)',colorScheme:'dark'}}/>
               </div>
-              <button onClick={()=>setStep(3)} className="w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105" style={{background:'#00E0A4',color:'#0A0A0F'}}>
+              <button onClick={()=>{track('trip_configured',{country:country.code,days,usage,trip_date:tripDate||null});setStep(3);}} className="w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 transition-all hover:scale-105" style={{background:'#00E0A4',color:'#0A0A0F'}}>
                 Show me the best deal <ArrowRight size={20} strokeWidth={2.5}/>
               </button>
             </div>
@@ -263,7 +296,7 @@ export default function App() {
                 <div className="text-center sm:text-right">
                   <div className="text-white/50 text-xs uppercase tracking-wider mb-1">Total for {days} days</div>
                   <div className="display text-white font-extrabold mb-3" style={{fontSize:'clamp(2.5rem,6vw,3.5rem)'}}>${results.recommended.price}</div>
-                  <a href={results.recommended.affiliateUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all hover:scale-105 w-full sm:w-auto" style={{background:'#00E0A4',color:'#0A0A0F'}}>
+                  <a href={results.recommended.affiliateUrl} target="_blank" rel="noopener noreferrer" onClick={()=>track('result_click',{provider:results.recommended.key,price:results.recommended.price,country:country.code,days,usage,placement:'recommended'})} className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all hover:scale-105 w-full sm:w-auto" style={{background:'#00E0A4',color:'#0A0A0F'}}>
                     Get this eSIM <ArrowRight size={18} strokeWidth={2.5}/>
                   </a>
                   <div className="flex items-center justify-center sm:justify-end gap-1 mt-2 text-white/40 text-xs">
@@ -283,7 +316,7 @@ export default function App() {
                       <div className="text-white/40 text-xs mt-0.5">{r.tagline}</div>
                     </div>
                     <div className="text-white display text-xl font-extrabold">${r.price}</div>
-                    <a href={r.affiliateUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg text-sm font-semibold" style={{background:'rgba(255,255,255,.06)',color:'white',border:'1px solid rgba(255,255,255,.1)'}}>Visit</a>
+                    <a href={r.affiliateUrl} target="_blank" rel="noopener noreferrer" onClick={()=>track('result_click',{provider:r.key,price:r.price,country:country.code,days,usage,placement:'alternative'})} className="px-4 py-2 rounded-lg text-sm font-semibold" style={{background:'rgba(255,255,255,.06)',color:'white',border:'1px solid rgba(255,255,255,.1)'}}>Visit</a>
                   </div>
                 ))}
                 <div className="flex items-center gap-4 p-4 rounded-2xl" style={{background:'rgba(239,68,68,.05)',border:'1px solid rgba(239,68,68,.2)'}}>
@@ -303,7 +336,7 @@ export default function App() {
               <div className="flex items-center gap-3"><TrendingDown size={18} style={{color:'#00E0A4'}}/><div><div className="text-white text-sm font-semibold">240,000+ travelers</div><div className="text-white/40 text-xs">Saved $14M+ in fees</div></div></div>
             </div>
             <div className="text-center">
-              <button onClick={()=>{setStep(1);setCountry(null);setSearch('');}} className="text-white/40 hover:text-white text-sm transition-colors">Compare another country</button>
+              <button onClick={()=>{track('funnel_restart',{from_country:country?.code});setStep(1);setCountry(null);setSearch('');}} className="text-white/40 hover:text-white text-sm transition-colors">Compare another country</button>
             </div>
           </div>
         )}
