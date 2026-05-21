@@ -223,7 +223,7 @@ export default function App() {
             <div className="text-center mb-8">
               <div className="text-5xl mb-2">{getFlagEmoji(country.flag)}</div>
               <h2 className="display text-white text-4xl font-extrabold">Going to {country.name}</h2>
-              <button onClick={()=>setStep(1)} className="text-white/40 text-sm mt-2 hover:text-white transition-colors">Change destination</button>
+              <button onClick={()=>{track('step_back',{from:2,to:1});setStep(1);}} className="text-white/40 text-sm mt-2 hover:text-white transition-colors">Change destination</button>
             </div>
             <div className="space-y-6 p-8 rounded-3xl" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
               <div>
