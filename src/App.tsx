@@ -296,7 +296,7 @@ export default function App() {
                 <div className="text-center sm:text-right">
                   <div className="text-white/50 text-xs uppercase tracking-wider mb-1">Total for {days} days</div>
                   <div className="display text-white font-extrabold mb-3" style={{fontSize:'clamp(2.5rem,6vw,3.5rem)'}}>${results.recommended.price}</div>
-                  <a href={results.recommended.affiliateUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all hover:scale-105 w-full sm:w-auto" style={{background:'#00E0A4',color:'#0A0A0F'}}>
+                  <a href={results.recommended.affiliateUrl} target="_blank" rel="noopener noreferrer" onClick={()=>track('result_click',{provider:results.recommended.key,price:results.recommended.price,country:country.code,days,usage,placement:'recommended'})} className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all hover:scale-105 w-full sm:w-auto" style={{background:'#00E0A4',color:'#0A0A0F'}}>
                     Get this eSIM <ArrowRight size={18} strokeWidth={2.5}/>
                   </a>
                   <div className="flex items-center justify-center sm:justify-end gap-1 mt-2 text-white/40 text-xs">
