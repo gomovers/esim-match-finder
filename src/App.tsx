@@ -316,7 +316,7 @@ export default function App() {
                       <div className="text-white/40 text-xs mt-0.5">{r.tagline}</div>
                     </div>
                     <div className="text-white display text-xl font-extrabold">${r.price}</div>
-                    <a href={r.affiliateUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg text-sm font-semibold" style={{background:'rgba(255,255,255,.06)',color:'white',border:'1px solid rgba(255,255,255,.1)'}}>Visit</a>
+                    <a href={r.affiliateUrl} target="_blank" rel="noopener noreferrer" onClick={()=>track('result_click',{provider:r.key,price:r.price,country:country.code,days,usage,placement:'alternative'})} className="px-4 py-2 rounded-lg text-sm font-semibold" style={{background:'rgba(255,255,255,.06)',color:'white',border:'1px solid rgba(255,255,255,.1)'}}>Visit</a>
                   </div>
                 ))}
                 <div className="flex items-center gap-4 p-4 rounded-2xl" style={{background:'rgba(239,68,68,.05)',border:'1px solid rgba(239,68,68,.2)'}}>
