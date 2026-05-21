@@ -68,6 +68,19 @@ function getFlagEmoji(code: string) {
   return String.fromCodePoint(...code.toUpperCase().split('').map((c: string) => 127397 + c.charCodeAt(0)));
 }
 
+function track(event: string, params: Record<string, any> = {}) {
+  if (typeof window === 'undefined') return;
+  const payload = { event, ...params, ts: Date.now() };
+  try {
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push(payload);
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', event, params);
+    }
+  } catch {}
+  if (typeof console !== 'undefined') console.log('[analytics]', event, params);
+}
+
 export default function App() {
   const [step, setStep] = React.useState(1);
   const [country, setCountry] = React.useState<any>(null);
@@ -75,6 +88,26 @@ export default function App() {
   const [days, setDays] = React.useState(7);
   const [usage, setUsage] = React.useState<keyof typeof USAGE_PRESETS>('medium');
   const [tripDate, setTripDate] = React.useState('');
+
+  React.useEffect(() => { track('funnel_start', { step: 1 }); }, []);
+  React.useEffect(() => {
+    if (step === 3 && country && results) {
+      track('results_view', {
+        country: country.code,
+        country_name: country.name,
+        days,
+        usage,
+        trip_date: tripDate || null,
+        days_until_trip: daysUntilTrip,
+        cheapest_price: results.rows[0]?.price,
+        recommended_provider: results.recommended?.key,
+        recommended_price: results.recommended?.price,
+        savings: results.savings,
+        savings_pct: results.savingsPct,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const filteredDestinations = React.useMemo(() => {
     if (!search) return DESTINATIONS;
