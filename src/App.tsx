@@ -336,7 +336,7 @@ export default function App() {
               <div className="flex items-center gap-3"><TrendingDown size={18} style={{color:'#00E0A4'}}/><div><div className="text-white text-sm font-semibold">240,000+ travelers</div><div className="text-white/40 text-xs">Saved $14M+ in fees</div></div></div>
             </div>
             <div className="text-center">
-              <button onClick={()=>{setStep(1);setCountry(null);setSearch('');}} className="text-white/40 hover:text-white text-sm transition-colors">Compare another country</button>
+              <button onClick={()=>{track('funnel_restart',{from_country:country?.code});setStep(1);setCountry(null);setSearch('');}} className="text-white/40 hover:text-white text-sm transition-colors">Compare another country</button>
             </div>
           </div>
         )}
