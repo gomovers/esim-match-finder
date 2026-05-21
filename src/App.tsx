@@ -208,7 +208,7 @@ export default function App() {
               </div>
               <div className="mt-4 max-h-96 overflow-y-auto scrollbar-thin grid grid-cols-1 sm:grid-cols-2 gap-2 p-1">
                 {filteredDestinations.map(d=>(
-                  <button key={d.code} onClick={()=>{setCountry(d);setStep(2);}} className="flex items-center gap-3 p-4 rounded-xl text-left transition-all hover:scale-105" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
+                  <button key={d.code} onClick={()=>{track('country_select',{country:d.code,country_name:d.name,region:d.region});setCountry(d);setStep(2);}} className="flex items-center gap-3 p-4 rounded-xl text-left transition-all hover:scale-105" style={{background:'rgba(255,255,255,.03)',border:'1px solid rgba(255,255,255,.08)'}}>
                     <span className="text-2xl">{getFlagEmoji(d.flag)}</span>
                     <div className="flex-1"><div className="text-white font-semibold">{d.name}</div><div className="text-white/40 text-xs">{d.region}</div></div>
                     <ArrowRight size={16} className="text-white/30"/>
