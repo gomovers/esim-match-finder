@@ -1,3 +1,13 @@
+// REPLACEMENT for src/server.ts in github.com/gomovers/esim-match-finder
+// Adds 301 redirects so the canonical hostname is always esimfinder.com.au:
+//   - esimmatch.com.au       -> esimfinder.com.au
+//   - www.esimmatch.com.au   -> esimfinder.com.au
+//   - www.esimfinder.com.au  -> esimfinder.com.au
+//
+// Paste the entire file into the GitHub web editor at:
+//   https://github.com/gomovers/esim-match-finder/edit/main/src/server.ts
+// then "Commit changes" -> commit to main. Cloudflare auto-redeploys.
+
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
@@ -6,6 +16,13 @@ import { renderErrorPage } from "./lib/error-page";
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
+
+const CANONICAL_HOST = "esimfinder.com.au";
+const REDIRECT_HOSTS = new Set([
+  "esimmatch.com.au",
+  "www.esimmatch.com.au",
+  "www.esimfinder.com.au",
+]);
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
@@ -66,9 +83,21 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   return brandedErrorResponse();
 }
 
+function canonicalRedirect(request: Request): Response | null {
+  const url = new URL(request.url);
+  const host = url.hostname.toLowerCase();
+  if (!REDIRECT_HOSTS.has(host)) return null;
+  const target = `https://${CANONICAL_HOST}${url.pathname}${url.search}`;
+  // 301 = permanent. Pass-through method via Response.redirect (browsers default to GET on redirect).
+  return Response.redirect(target, 301);
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const redirect = canonicalRedirect(request);
+      if (redirect) return redirect;
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
