@@ -145,6 +145,7 @@ export default function App() {
   }, [tripDate]);
 
   return (
+    <>
     <div className="min-h-screen w-full" style={{background:'#0A0A0F',fontFamily:"'Inter',system-ui,sans-serif"}}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
 .display{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.03em}
@@ -346,5 +347,6 @@ export default function App() {
         </div>
       </div>
     </div>
+    </>
   );
 }
