@@ -79,6 +79,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "eSIM Match",
+              "url": "https://esimfinder.com.au",
+              "logo": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/77c9eaee-8ae9-49dd-9e93-086f51badaee/id-preview-86cf30fe--2ccc05ce-9a37-4547-8550-85212b9f3228.lovable.app-1778644419773.png",
+              "description": "eSIM Match compares top eSIM providers — Holafly, Airalo, Nomad, Saily, Ubigi and GigSky — so travellers find the cheapest data plan for their destination."
+            },
+            {
+              "@type": "WebSite",
+              "name": "eSIM Match",
+              "url": "https://esimfinder.com.au"
+            }
+          ]
+        })
+      }
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
